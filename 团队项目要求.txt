@@ -1,0 +1,16 @@
+大作业可以在文本生成领域自由选择主题，我们给出三个方向可供选择（不限于这三个，其他的如文本风格迁移等生成任务也可以）：
+1 新闻标题生成
+参考文献： Generating News Headlines with Recurrent Neural Networks （https://arxiv.org/abs/1512.01712）
+数据地址： http://www.sogou.com/labs/resource/cs.php   完整版(648M)
+2 （单轮）对话回复生成
+参考文献：Neural Responding Machine for Short-Text Conversation （https://www.aclweb.org/anthology/P15-1152）
+数据地址：http://data.noahlab.com.hk/conversation/
+3 古诗（七言绝句）生成
+参考文献：Chinese Poetry Generation with Recurrent Neural Networks （https://www.aclweb.org/anthology/D14-1074）
+数据地址1：http://homepages.inf.ed.ac.uk/mlap/Data/EMNLP14/
+数据地址2：https://github.com/ChaosPKU/Poetry/blob/master/FirstSentence/dataset/shixuehanying.txt
+
+组队：以学期先前的组队来进行
+报告：所有的组都需要报告，除了介绍方法之外，需要有样例的展示。
+DDL：时间另行通知
+建议：我们提供的三个方向，我们给出了参考文献，同学们可以实现论文中的模型也可以自行查阅其他相关的文献来实现，也可以自己调整或者设计模型。
