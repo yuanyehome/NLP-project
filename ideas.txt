@@ -1,3 +1,6 @@
 1. 预训练模型--roberta？
-2. 额外数据集
+2. 一些可能有用的链接
+    - https://github.com/candlewill/Dialog_Corpus
+    - https://github.com/PowerChina/seq2seq
+    - https://github.com/Dikea/Dialog-System-with-Task-Retrieval-and-Seq2seq
 3. 知识图谱--知识问答？
