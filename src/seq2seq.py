@@ -236,6 +236,9 @@ def main():
     encoder = EncoderRNN(len(data.idx2word), 300).to(device)
     decoder = DecoderRNN(len(data.idx2word), 300).to(device)
     trainIters(encoder, decoder, 1000000, data, 10000)
+    torch.save(encoder, '../models/encoder.pkl')
+    torch.save(decoder, '../models/decoder.pkl')
+    evaluateRandomly(encoder, decoder, data)
 
 
 if __name__ == "__main__":
