@@ -3,3 +3,4 @@
 src/some_test.py
 pre-trained-embedding/*
 TODO
+models/*
