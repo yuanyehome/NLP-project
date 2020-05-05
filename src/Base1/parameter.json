@@ -1,0 +1,18 @@
+{
+  "stop_words": "resource/stop_words.txt",
+  "post": "resource/post.txt",
+  "response": "resource/response.txt",
+  "original": "resource/original.txt",
+  "batch_size": 256,
+  "vocab_size": 155920,
+  "seq_size": 20,
+  "embed_dim": 300,
+  "similar": {
+    "similar_k": 4,
+    "cut": 0.9,
+    "attn_dim": 256,
+    "dropout": 0.5,
+    "lr": 0.001,
+    "epoch": 5
+  }
+}
