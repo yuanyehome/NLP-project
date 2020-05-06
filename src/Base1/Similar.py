@@ -23,10 +23,10 @@ class SimilarModel(torch.nn.Module):
         self.V = nn.Linear(self.embed_dim, self.attn_dim)
         self.W = nn.Sequential(nn.Linear(self.embed_dim, 1), nn.Softmax(dim=1))
 
-    def attn(self, inputs1, inputs2):  # (B,S,E)
-        q = self.Q(inputs1)  # (B,S,A)
-        k = self.K(inputs2).permute(0, 2, 1)  # (B,A,S)
-        v = self.V(inputs1)  # (B,S,A)
+    def attn(self, inputs):  # (B,S,E)
+        q = self.Q(inputs)  # (B,S,A)
+        k = self.K(inputs).permute(0, 2, 1)  # (B,A,S)
+        v = self.V(inputs)  # (B,S,A)
         out = torch.bmm(F.softmax(torch.bmm(q, k)), v)  # (B,S,A)
         return out
 

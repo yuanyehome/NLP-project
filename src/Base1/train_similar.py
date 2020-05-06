@@ -18,8 +18,37 @@ param_path = 'parameter.json'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")  # 是否GPU训练
 seed = 2020
 torch.manual_seed(seed)
-cont = True  # 是否继续训练
-time = 0  # 从哪个模型开始
+cont = True  # 是否继续
+time = 195  # 从哪个模型开始
+train_mode = True  # 训练/测试
+
+
+###################################################################################
+# 训练过程
+def test(test_loader, model):
+    model.eval()
+    size = len(test_loader)
+    Loss = torch.nn.BCELoss().to(device)
+    sum_num = 0
+    sum_loss = 0
+    sum_truth = 0
+    for seq, y in test_loader:
+        seq = seq.permute(1, 0, 2)
+        seq1 = seq[0].to(device)
+        seq2 = seq[1].to(device)
+        y = y.float().to(device)
+        out = model(seq1, seq2)
+        out[out < 0.0] = 0.0
+        out[out > 1.0] = 1.0
+        loss = Loss(out, y)
+        sum_loss += loss.cpu().detach().numpy()
+        sum_truth += torch.mean(torch.abs(y-out)).item()
+        sum_num += 1
+        if sum_num % 50 == 0:
+            print("time:", sum_num, "/", size, " test loss:", sum_loss / sum_num)
+            print("time:", sum_num, "/", size, " truth loss:", sum_truth / sum_num)
+    print("test loss:", sum_loss / sum_num)
+    print("truth loss:", sum_truth / sum_num)
 
 
 ###################################################################################
@@ -47,11 +76,14 @@ def train(train_loader, model, param, begin):
             loss.backward()
             optimizer.step()
             sum_loss += loss.cpu().detach().numpy()
+            sum_truth += torch.mean(torch.abs(y - out)).item()
             sum_num += 1
             if sum_num % 50 == 0:
                 print("time:", sum_num, "/", size, " train loss:", sum_loss / sum_num)
+                print("time:", sum_num, "/", size, " truth loss:", sum_truth / sum_num)
         print("train loss:", sum_loss / sum_num)
-        if epoch % 2 == 0:
+        print("truth loss:", sum_truth / sum_num)
+        if epoch % 5 == 0:
             torch.save(model, 'resource/model_{}.pkl'.format(epoch))
 
 
@@ -101,29 +133,36 @@ def main():
         np.save('resource/test_x.npy', test_x)
         np.save('resource/test_y.npy', test_y)
 
-    # 封装数据集
-    print("truth:", train_y.sum()/len(train_y))
-    train_x = torch.from_numpy(train_x).long()
-    train_y = torch.from_numpy(train_y)
-    train_set = dt.TensorDataset(train_x, train_y)
-    train_loader = dt.DataLoader(dataset=train_set, batch_size=param["batch_size"], pin_memory=True,
-                                 shuffle=True, num_workers=0, drop_last=True)
-
-    if cont:
-        try:
-            data_loader.load_data()
-            model = torch.load('resource/model_{}.pkl'.format(time))
-            print("old model get")
-            train(train_loader, model, param, time)
-        except:
-            print("no old model")
+    if train_mode:
+        # 封装数据集
+        print("truth:", train_y.sum() / len(train_y))
+        train_x = torch.from_numpy(train_x).long()
+        train_y = torch.from_numpy(train_y)
+        train_set = dt.TensorDataset(train_x, train_y)
+        train_loader = dt.DataLoader(dataset=train_set, batch_size=param["batch_size"], pin_memory=True
+                                     , shuffle=True, num_workers=0, drop_last=True)
+        if cont:
+            try:
+                data_loader.load_data()
+                model = torch.load('resource/model_{}.pkl'.format(time))
+                print("old model get")
+                train(train_loader, model, param, time)
+            except:
+                print("no old model")
+                train(train_loader, model, param, 0)
+        else:
             train(train_loader, model, param, 0)
+        data_loader.save_data()
+        torch.save(model, 'resource/similar.pkl')
+        torch.save(embedding, 'resource/embedding.pkl')
     else:
-        train(train_loader, model, param, 0)
-
-    data_loader.save_data()
-    torch.save(model, 'resource/similar.pkl')
-    torch.save(embedding, 'resource/embedding.pkl')
+        test_x = torch.from_numpy(test_x).long()
+        test_y = torch.from_numpy(test_y)
+        test_set = dt.TensorDataset(test_x, test_y)
+        test_loader = dt.DataLoader(dataset=test_set, batch_size=param["batch_size"], pin_memory=True
+                                    , shuffle=True, num_workers=0, drop_last=True)
+        model = torch.load('resource/similar.pkl')
+        test(test_loader, model)
 
 
 main()

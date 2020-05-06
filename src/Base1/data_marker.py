@@ -88,7 +88,7 @@ class GetData:
     
         words = post_words+res_words
         counter = Counter(words)
-        vocabulary = ['<PAD>'] + ['<UNK>'] + [k[0] for k in counter.most_common(vocab_size-2)]
+        vocabulary = ['<UNK>'] + ['<PAD>'] + [k[0] for k in counter.most_common(vocab_size-2)]
         print(vocabulary)
 
         self.vocab = dict([(b, a) for a, b in enumerate(vocabulary)])
@@ -135,6 +135,39 @@ class GetData:
     def get_vocab(self):
         return self.vocab
 
+    # 获得replier所需数据
+    def replier_maker(self, max_length, cut):
+        print("similar")
+        x = []
+        y = []
+        random.shuffle(self.post_res)
+        length = len(self.post_res)
+        p_bar = tqdm(total=length)
+        for (post, res, post_id) in self.post_res:
+            if len(post) > max_length:
+                post = post[:max_length]
+            while len(post) < max_length:
+                post.append(0)
+            if len(res) > max_length:
+                res = res[:max_length]
+            while len(res) < max_length:
+                res.append(0)
+            x.append(post)
+            y.append(res)
+            p_bar.update(1)
+        p_bar.close()
+        length = len(x)
+        test_x = x[:int(length * cut)]
+        test_y = y[:int(length * cut)]
+        train_x = x[int(length * cut):]
+        train_y = y[int(length * cut):]
+        test_x = np.array(test_x)
+        test_y = np.array(test_y)
+        train_x = np.array(train_x)
+        train_y = np.array(train_y)
+        return train_x, train_y, test_x, test_y
+
+    # 获得similar所需数据
     def similar_maker(self, similar_k):
         similar_list = []
         now_similar = 0
