@@ -14,6 +14,7 @@ import random
 import numpy as np
 import time
 import math
+import argparse
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 MAX_LENGTH = 20
@@ -218,17 +219,28 @@ def evaluateRandomly(encoder, decoder, data, n=10):
         print("\tQ: %s" % data.change_idxs_to_sentence(pair[0]))
         print("\tstd A: %s" % data.change_idxs_to_sentence(pair[1]))
         print("\tout A: %s" % data.change_idxs_to_sentence(
-            evaluate(encoder, decoder, pair[0], data)
+            evaluate(encoder, decoder, pair[0], data)[0]
         ))
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--encoder", default=None, help="the path of encoder")
+    parser.add_argument("--decoder", default=None, help="the path of decoder")
+    args = parser.parse_args()
     with open("../data/preprocessed_data/chosen_word2id.pkl", "rb") as f:
         chosen_word2id = pickle.load(f)
     with open("../data/preprocessed_data/chosen_word_list.pkl", "rb") as f:
         word_list = pickle.load(f)
     with open("../data/preprocessed_data/qa_pair.pkl", "rb") as f:
         qa_pairs = pickle.load(f)
+
+    if (args.encoder is not None) and (args.decoder is not None):
+        data = DataInfo(chosen_word2id, word_list, qa_pairs)
+        encoder = torch.load(args.encoder)
+        decoder = torch.load(args.decoder)
+        evaluateRandomly(encoder, decoder, data)
+        return None
 
     # prepare data
     data = DataInfo(chosen_word2id, word_list, qa_pairs)
