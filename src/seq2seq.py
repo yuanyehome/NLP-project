@@ -237,8 +237,8 @@ def main():
 
     if (args.encoder is not None) and (args.decoder is not None):
         data = DataInfo(chosen_word2id, word_list, qa_pairs)
-        encoder = torch.load(args.encoder)
-        decoder = torch.load(args.decoder)
+        encoder = torch.load(args.encoder, map_location=device)
+        decoder = torch.load(args.decoder, map_location=device)
         evaluateRandomly(encoder, decoder, data)
         return None
 
