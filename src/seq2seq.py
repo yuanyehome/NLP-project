@@ -218,9 +218,7 @@ def evaluateRandomly(encoder, decoder, data, n=10):
         print("test case %d")
         print("\tQ: %s" % data.change_idxs_to_sentence(pair[0]))
         print("\tstd A: %s" % data.change_idxs_to_sentence(pair[1]))
-        print("\tout A: %s" % data.change_idxs_to_sentence(
-            evaluate(encoder, decoder, pair[0], data)[0]
-        ))
+        print("\tout A: %s" % evaluate(encoder, decoder, pair[0], data)[0])
 
 
 def main():
