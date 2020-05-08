@@ -20,13 +20,12 @@ class ScaledProductAttention(nn.Module):
 
     def forward(self, q, k, v, mask=None):
         """
-        :param q: query
-        :param k: key
-        :param v: value
+        :param q: query [batch_size, n_head, seq_len, d_k]
+        :param k: key [batch_size, n_head, seq_len, d_k]
+        :param v: value [batch_size, n_head, seq_len, d_v]
         :param mask: 是否要使用mask，在训练生成模型时候用到，防止模型看到当前后面的内容造成泄露
         :return: output, attention
         q, k, v含义参考`attention is all you need`
-        TODO: 需要补充参数的维度
         """
         attn = torch.matmul(q / self.temperature, k.transpose(2, 3))  # transpose:交换维度
         if mask is not None:
@@ -39,12 +38,6 @@ class ScaledProductAttention(nn.Module):
 
 class MultiHeadAttention(nn.Module):
     def __init__(self, n_head, d_model, d_k, d_v, dropout=0.1):
-        """
-        :param n_head:
-        :param d_model:
-        :param d_k:
-        :param d_v:
-        """
         super(MultiHeadAttention, self).__init__()
         self.n_head = n_head
         self.d_k = d_k
@@ -59,11 +52,12 @@ class MultiHeadAttention(nn.Module):
 
     def forward(self, q, k, v, mask=None):
         """
-        :param q:
-        :param k:
-        :param v:
-        :param mask:
-        :return: q, attn
+        :param q: [batch_size, seq_len, embed_dim]
+        :param k: [batch_size, seq_len, embed_dim]
+        :param v: [batch_size, seq_len, embed_dim]
+        :param mask: [batch_size, 1, seq_len]
+        :return: q [batch_size, seq_len, embed_dim]
+                 attn [batch_size, n_head, seq_len_1, seq_len_2]
         """
         d_k, d_v, n_head = self.d_k, self.d_v, self.n_head
         batch_size, len_q, len_k, len_v = q.size(0), q.size(1), k.size(v), v.size(1)

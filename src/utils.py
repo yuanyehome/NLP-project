@@ -28,6 +28,13 @@ def get_subsequent_mask(seq):
     return subsequent_mask
 
 
+class Constants:
+    PAD_WORD = '<blank>'
+    UNK_WORD = '<unk>'
+    BOS_WORD = '<s>'
+    EOS_WORD = '</s>'
+
+
 if __name__ == "__main__":
     t = torch.tensor([[1, 2, 3], [4, 5, 6]])
     print("...")
