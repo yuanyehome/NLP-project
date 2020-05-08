@@ -226,11 +226,11 @@ def main():
     parser.add_argument("--encoder", default=None, help="the path of encoder")
     parser.add_argument("--decoder", default=None, help="the path of decoder")
     args = parser.parse_args()
-    with open("../data/preprocessed_data/chosen_word2id.pkl", "rb") as f:
+    with open("data/preprocessed_data/chosen_word2id.pkl", "rb") as f:
         chosen_word2id = pickle.load(f)
-    with open("../data/preprocessed_data/chosen_word_list.pkl", "rb") as f:
+    with open("data/preprocessed_data/chosen_word_list.pkl", "rb") as f:
         word_list = pickle.load(f)
-    with open("../data/preprocessed_data/qa_pair.pkl", "rb") as f:
+    with open("data/preprocessed_data/qa_pair.pkl", "rb") as f:
         qa_pairs = pickle.load(f)
 
     if (args.encoder is not None) and (args.decoder is not None):

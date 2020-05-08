@@ -5,3 +5,4 @@ pre-trained-embedding/*
 TODO
 models/*
 .vscode/*
+.env
