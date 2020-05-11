@@ -130,7 +130,7 @@ def main():
     parser.add_argument('-n_layers', type=int, default=6)
     parser.add_argument('-warmup', '--n_warmup_steps', type=int, default=128000)
     parser.add_argument('-dropout', type=float, default=0.1)
-    parser.add_argument('-log', default="./log/log_%s" % time.strftime(
+    parser.add_argument('-log', default="./log/transformer_log_%s" % time.strftime(
         "%Y-%m-%d-%H:%M:%S", time.localtime()
     ))
     parser.add_argument('-no_cuda', action='store_true')
@@ -165,7 +165,7 @@ def main():
         out_pad_idx=args.pad_idx,
         embed_dim=args.embed_dim,
         d_model=args.d_model,
-        d_inner=args.d_inner,
+        d_inner=args.d_inner_hid,
         d_k=args.d_k,
         d_v=args.d_v,
         n_head=args.n_head,
@@ -180,7 +180,7 @@ def main():
         2.0, args.d_model, args.n_warmup_steps
     )
 
-    train(transformer, train_iterator, val_iterator, optimizer, args)
+    train(transformer, train_iterator, val_iterator, optimizer, device, args)
 
 
 if __name__ == "__main__":

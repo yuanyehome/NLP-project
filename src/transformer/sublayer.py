@@ -60,13 +60,13 @@ class MultiHeadAttention(nn.Module):
                  attn [batch_size, n_head, seq_len_1, seq_len_2]
         """
         d_k, d_v, n_head = self.d_k, self.d_v, self.n_head
-        batch_size, len_q, len_k, len_v = q.size(0), q.size(1), k.size(v), v.size(1)
+        batch_size, len_q, len_k, len_v = q.size(0), q.size(1), k.size(1), v.size(1)
         residual = q
         q = self.layer_norm(q)
 
         q = self.Q(q).view(batch_size, len_q, n_head, d_k)
         k = self.K(k).view(batch_size, len_k, n_head, d_k)
-        v = self.V(v).view(batch_size, len_k, n_head, d_v)
+        v = self.V(v).view(batch_size, len_v, n_head, d_v)
 
         q, k, v = q.transpose(1, 2), k.transpose(1, 2), v.transpose(1, 2)
         if mask is not None:

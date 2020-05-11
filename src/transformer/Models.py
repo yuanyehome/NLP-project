@@ -58,7 +58,7 @@ class Encoder(nn.Module):
         if return_attn:
             return enc_output, enc_self_attn_list
         else:
-            return enc_output
+            return enc_output,
 
 
 class Decoder(nn.Module):
@@ -90,7 +90,7 @@ class Decoder(nn.Module):
         if return_attns:
             return dec_output, dec_self_attn_list, dec_enc_attn_list
         else:
-            return dec_output
+            return dec_output,
 
 
 class Transformer(nn.Module):
