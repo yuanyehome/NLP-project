@@ -283,8 +283,8 @@ def main():
         torch.save(embedding, 'model/embedding.pkl')
 
     else:
-        Encoder = torch.load('model/Encoder.pkl')
-        Decoder = torch.load('model/Decoder.pkl')
+        Encoder = torch.load('model/Encoder.pkl', map_location=device)
+        Decoder = torch.load('model/Decoder.pkl', map_location=device)
         play(Encoder, Decoder, param, data_loader.vocab, data_loader.re_vocab)
 
 
