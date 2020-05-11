@@ -74,8 +74,8 @@ def patch_trg(trg, pad_idx):
     return trg, gold
 
 
-def printInfo(s):
-    print("\033[32m[INFO]\033[0m %s" % s)
+def printInfo(s, desc='INFO'):
+    print("\033[32m[%s]\033[0m %s" % (desc, s))
 
 
 class Constants:
