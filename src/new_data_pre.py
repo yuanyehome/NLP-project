@@ -74,8 +74,8 @@ def main():
         filter_pred=lambda x: (len(vars(x)['src']) <= max_len) and
                               (len(vars(x)['trg']) <= max_len)
     )
-    SRC.build_vocab(train.src, min_freq=10)
-    TRG.build_vocab(train.trg, min_freq=10)
+    SRC.build_vocab(train.src, min_freq=5)
+    TRG.build_vocab(train.trg, min_freq=5)
     for w, _ in SRC.vocab.stoi.items():
         if w not in TRG.vocab.stoi:
             TRG.vocab.stoi[w] = len(TRG.vocab.stoi)
