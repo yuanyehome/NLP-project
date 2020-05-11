@@ -98,7 +98,8 @@ class Transformer(nn.Module):
                  embed_dim=300, d_model=300, d_inner=2048, n_layers=6,
                  n_head=8, d_k=64, d_v=64, dropout=0.1, n_position=200,
                  target_embedding_output_weight_sharing=True,
-                 embedding_input_target_weight_sharing=True
+                 embedding_input_target_weight_sharing=True,
+                 pre_trained_embed=None
                  ):
         """
         :param vocab_size: 词典大小
@@ -113,7 +114,6 @@ class Transformer(nn.Module):
         :param d_v: value的维度（参考论文）
         :param n_position: 最多有几个位置（即seqlen最多是多少，比最大的大就行）
         """
-        # TODO 预训练词向量
         super(Transformer, self).__init__()
         assert (d_model == embed_dim)
         self.in_pad_idx = in_pad_idx
@@ -141,6 +141,9 @@ class Transformer(nn.Module):
             self.x_logit_scale = d_model ** -0.5
         if embedding_input_target_weight_sharing:
             self.encoder.embed.weight = self.decoder.embed.weight
+        if pre_trained_embed is not None:
+            # TODO 添加预训练
+            pass
 
     def forward(self, in_seq, target_seq):
         """
