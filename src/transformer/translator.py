@@ -12,12 +12,9 @@ from utils import get_subsequent_mask, get_pad_mask
 class Translator(nn.Module):
     def __init__(self, model, beam_size, max_seq_len, pad_idx, sos_idx, eos_idx):
         """
-        :param model:
-        :param beam_size:
-        :param max_seq_len:
-        :param pad_idx:
-        :param sos_idx:
-        :param eos_idx:
+        :param model: 模型
+        :param beam_size: 每次搜索保留概率最大的个数
+        :param max_seq_len: 最大结果长度
         """
         super(Translator, self).__init__()
         self.alpha = 0.7
@@ -44,7 +41,7 @@ class Translator(nn.Module):
 
     def _model_decode(self, target_seq, encoder_output, input_mask):
         """
-        TODO: 似乎是用来单次解码的
+        用来单次解码
         """
         target_mask = get_subsequent_mask(target_seq)
         decoder_output, *_ = self.model.decoder(target_seq, target_mask,
@@ -52,7 +49,9 @@ class Translator(nn.Module):
         return F.softmax(self.model.output_layer(decoder_output), dim=-1)
 
     def _get_init_state(self, input_seq, input_mask):
-        # TODO: 这个函数在做啥
+        """
+        初始化第一个词的beam_size个选择
+        """
         beam_size = self.beam_size
         encoder_output, *_ = self.model.encoder(input_seq, input_mask)
         decoder_output = self._model_decode(self.init_seq, encoder_output, input_mask)
@@ -61,15 +60,15 @@ class Translator(nn.Module):
         gen_seq = self.blank_seqs.clone().detach()
         gen_seq[:, 1] = best_k_idx[0]
         encoder_output = encoder_output.repeat(beam_size, 1, 1)
+        # shape [beam_size, seq_len, embed_dim]
+        # 输出最优选择重复beam_size次
         return encoder_output, gen_seq, scores
 
     def _get_the_best_score_and_idx(self, gen_seq, decoder_output, scores, step):
         """
-        :param gen_seq:
-        :param decoder_output:
-        :param scores:
-        :param step:
-        :return:
+        :param gen_seq: 用来保存生成的序列
+        :param step: 当前要生成第几步
+        :return: 新的序列，beam_size个序列分别对应的分数
         """
         beam_size = self.beam_size
         best_k2_probs, best_k2_idx = decoder_output[:, -1, :].topk(beam_size)
@@ -104,7 +103,7 @@ class Translator(nn.Module):
                 )
                 eos_locs = gen_seq == eos_idx
                 seq_lens, _ = self.len_map.masked_fill(~eos_locs, max_seq_len).min(1)
-                # TODO: 上面那句话在干啥
+                # 长度的惩罚项，不能让长度太长
                 if (eos_locs.sum(1) > 0).sum(0).item() == beam_size:
                     _, ans_idx = scores.div(seq_lens.float() ** alpha).max(0)
                     ans_idx = ans_idx.item()
