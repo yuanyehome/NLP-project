@@ -115,8 +115,6 @@ def train(model, training_data, valid_data, optimizer, device, args):
                     ppl=math.exp(min(valid_loss, 100)), accu=100*valid_accu))
 
 
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-data_pkl', default=None)
