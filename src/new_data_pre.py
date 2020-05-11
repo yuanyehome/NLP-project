@@ -14,10 +14,12 @@ import torchtext
 def read_data():
     Q = []
     A = []
-    for pair in os.listdir("../data/new_data"):
+    for pair in os.listdir("./data/new_data"):
         if pair.split('.')[-1] != 'tsv':
             continue
-        with open("../data/new_data/%s" % pair) as f:
+        if pair == 'douban_single_turn.tsv':
+            continue
+        with open("./data/new_data/%s" % pair) as f:
             for line in f.readlines():
                 qa = line.split('\t')
                 Q.append(qa[0].strip())
@@ -39,19 +41,19 @@ def read_data():
         train, val = all_data[0: idx1], all_data[idx1:]
         return val
 
-    with open('../data/new_data/train.in', 'w') as f:
+    with open('./data/new_data/train.in', 'w') as f:
         f.write('\n'.join(split_data_train(Q)))
-    with open('../data/new_data/val.in', 'w') as f:
+    with open('./data/new_data/val.in', 'w') as f:
         f.write('\n'.join(split_data_val(Q)))
 
-    with open('../data/new_data/train.out', 'w') as f:
+    with open('./data/new_data/train.out', 'w') as f:
         f.write('\n'.join(split_data_train(A)))
-    with open('../data/new_data/val.out', 'w') as f:
+    with open('./data/new_data/val.out', 'w') as f:
         f.write('\n'.join(split_data_val(A)))
 
 
 def main():
-    # read_data()
+    read_data()
     max_len = 50
     SRC = torchtext.data.Field(
         pad_token=Constants.PAD_WORD,
@@ -65,7 +67,7 @@ def main():
     )
 
     train, val, test = torchtext.datasets.TranslationDataset.splits(
-        path='../data/new_data',
+        path='./data/new_data',
         fields=(SRC, TRG),
         exts=('.in', '.out'),
         train='train',
@@ -74,8 +76,8 @@ def main():
         filter_pred=lambda x: (len(vars(x)['src']) <= max_len) and
                               (len(vars(x)['trg']) <= max_len)
     )
-    SRC.build_vocab(train.src, min_freq=5)
-    TRG.build_vocab(train.trg, min_freq=5)
+    SRC.build_vocab(train.src, min_freq=3)
+    TRG.build_vocab(train.trg, min_freq=3)
     for w, _ in SRC.vocab.stoi.items():
         if w not in TRG.vocab.stoi:
             TRG.vocab.stoi[w] = len(TRG.vocab.stoi)
@@ -93,7 +95,7 @@ def main():
         'test': val.examples
     }
     printInfo("Vocab size: %d" % len(SRC.vocab))
-    pickle.dump(data, open('../data/new_data/data.pkl', 'wb'))
+    pickle.dump(data, open('./data/new_data/data.pkl', 'wb'))
     printInfo("Torchtext data saved!")
 
 
