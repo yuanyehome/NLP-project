@@ -48,6 +48,20 @@ def main():
     device = torch.device('cuda' if args.cuda else 'cpu')
     printInfo("Using device %s" % device)
 
+    data = pickle.load(open(args.data_pkl, "rb"))
+    args.max_seq_len = data["max_len"]
+    args.pad_idx = data['vocab']['src'].vocab.stoi[Constants.PAD_WORD]
+    args.vocab_size = len(data['vocab']['src'].vocab)
+    fields = {'src': data['vocab']['src'], 'trg':data['vocab']['trg']}
+    train = Dataset(examples=data['train'], fields=fields)
+    val = Dataset(examples=data['valid'], fields=fields)
+    train_iterator = BucketIterator(train, batch_size=args.batch_size,
+                                    device=device, train=True)
+    val_iterator = BucketIterator(val, batch_size=args.batch_size, device=device)
+
+    # 训练开始
+
+
 
 if __name__ == "main":
     main()

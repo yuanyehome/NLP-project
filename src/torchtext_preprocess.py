@@ -57,6 +57,7 @@ def build_data_files():
 
 
 def main():
+    max_len = 20
     SRC = torchtext.data.Field(
         pad_token=Constants.PAD_WORD,
         init_token=Constants.BOS_WORD,
@@ -74,7 +75,9 @@ def main():
         exts=('.in', '.out'),
         train='train',
         validation='val',
-        test='val'
+        test='val',
+        filter_pred=lambda x: (len(vars(x)['src']) <= max_len) and
+                              (len(vars(x)['trg']) <= max_len)
     )
     SRC.build_vocab(train.src)
     TRG.build_vocab(train.trg)
@@ -88,7 +91,8 @@ def main():
     SRC.vocab.itos = TRG.vocab.itos
 
     data = {
-        'vocab': SRC,
+        'max_len': max_len,
+        'vocab': {'src': SRC, "trg": TRG},
         'train': train.examples,
         'valid': val.examples,
         'test': val.examples
