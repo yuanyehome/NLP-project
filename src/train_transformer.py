@@ -15,7 +15,8 @@ import torch.optim as optim
 from torchtext.data import Field, Dataset, BucketIterator
 from torchtext.datasets import TranslationDataset
 
-from utils import Constants, printInfo, cal_loss, cal_performance, loadData
+from utils import Constants, printInfo, cal_loss, cal_performance, \
+    loadData, patch_src, patch_trg
 from transformer.Models import Transformer
 from transformer.OptimUtils import ScheduleOptim
 
