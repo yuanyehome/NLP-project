@@ -74,8 +74,8 @@ def main():
         filter_pred=lambda x: (len(vars(x)['src']) <= max_len) and
                               (len(vars(x)['trg']) <= max_len)
     )
-    SRC.build_vocab(train.src)
-    TRG.build_vocab(train.trg)
+    SRC.build_vocab(train.src, min_freq=10)
+    TRG.build_vocab(train.trg, min_freq=10)
     for w, _ in SRC.vocab.stoi.items():
         if w not in TRG.vocab.stoi:
             TRG.vocab.stoi[w] = len(TRG.vocab.stoi)
@@ -92,6 +92,7 @@ def main():
         'valid': val.examples,
         'test': val.examples
     }
+    printInfo("Vocab size: %d" % len(SRC.vocab))
     pickle.dump(data, open('../data/new_data/data.pkl', 'wb'))
     printInfo("Torchtext data saved!")
 
