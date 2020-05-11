@@ -78,11 +78,6 @@ def printInfo(s):
     print("\033[33m[INFO]\033[0m %s" % s)
 
 
-def loadData():
-    printInfo("Loading data")
-    printInfo("Complete!")
-
-
 class Constants:
     PAD_WORD = '<blank>'
     UNK_WORD = '<unk>'
