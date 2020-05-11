@@ -1,0 +1,19 @@
+{
+  "stop_words": "resource/stop_words.txt",
+  "data_path": "resource/qingyun.tsv",
+  "batch_size": 256,
+  "seq_size": 10,
+  "embed_dim": 300,
+  "cut": 0.9,
+  "encoder": {
+    "layer": 2,
+    "attn_dim": 300,
+    "hidden_size": 300,
+    "dropout": 0.5
+  },
+  "decoder": {
+    "layer": 2,
+    "hidden_size": 300,
+    "dropout": 0.5
+  }
+}
