@@ -8,3 +8,7 @@ models/*
 .env
 data/
 log/*
+src/seq2seq/code/model/*
+src/seq2seq/code/resource/*
+**/*.pptx
+

@@ -12,6 +12,7 @@ from utils import Constants, printInfo
 from torchtext.data import Dataset
 from transformer.Models import Transformer
 from transformer.translator import Translator
+import jieba
 
 
 def load_model(opt, device):
@@ -66,6 +67,11 @@ def main():
     ).to(device)
 
     unk_idx = SRC.vocab.stoi[SRC.unk_token]
+
+    while True:
+        print("请输入问题: ")
+        sentence = input()
+        sentence = list(jieba.cut(sentence))
 
 
 if __name__ == "__main__":
