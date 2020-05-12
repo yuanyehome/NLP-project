@@ -106,6 +106,7 @@ class Translator(nn.Module):
                 # 长度的惩罚项，不能让长度太长
                 if (eos_locs.sum(1) > 0).sum(0).item() == beam_size:
                     _, ans_idx = scores.div(seq_lens.float() ** alpha).max(0)
+                    # _, ans_idx = scores.max(0)
                     ans_idx = ans_idx.item()
                     break
         return gen_seq[ans_idx][:seq_lens[ans_idx]].tolist()

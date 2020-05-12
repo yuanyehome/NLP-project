@@ -13,6 +13,7 @@ from torchtext.data import Dataset
 from transformer.Models import Transformer
 from transformer.translator import Translator
 import jieba
+import torchtext
 
 
 def load_model(opt, device):
@@ -47,6 +48,8 @@ def main():
     parser.add_argument('-beam_size', type=int, default=5)
     parser.add_argument('-max_seq_len', type=int, default=50)
     parser.add_argument('-no_cuda', action='store_true')
+    parser.add_argument('-data_pkl', required=True,
+                        help='Pickle file with both instances and vocabulary.')
     opt = parser.parse_args()
     opt.cuda = not opt.no_cuda
 
@@ -72,6 +75,10 @@ def main():
         print("请输入问题: ")
         sentence = input()
         sentence = list(jieba.cut(sentence))
+        printInfo(sentence, "debugINFO")
+        src_seq = [SRC.vocab.stoi.get(word, unk_idx) for word in sentence]
+        ret = translator.translate_sentence(torch.tensor([src_seq], dtype=torch.long).to(device))
+        printInfo(ret, "debugINFO")
 
 
 if __name__ == "__main__":
