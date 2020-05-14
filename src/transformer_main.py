@@ -78,7 +78,9 @@ def main():
         printInfo(sentence, "debugINFO")
         src_seq = [SRC.vocab.stoi.get(word, unk_idx) for word in sentence]
         ret = translator.translate_sentence(torch.tensor([src_seq], dtype=torch.long).to(device))
+        ret = list(map(lambda idx: data['vocab']['src'].vocab.itos[idx], ret))
         printInfo(ret, "debugINFO")
+        print("Robot: %s" % ''.join(ret))
 
 
 if __name__ == "__main__":
