@@ -41,6 +41,13 @@ def load_model(opt, device):
     return model
 
 
+def get_parameter_number(net):
+    total_num = sum(p.numel() for p in net.parameters())
+    trainable_num = sum(p.numel() for p in net.parameters() if p.requires_grad)
+    return {'Total': total_num, 'Trainable': trainable_num}
+
+
+
 def main():
     parser = argparse.ArgumentParser(description='translate.py')
     parser.add_argument('-model', required=True,
@@ -68,6 +75,8 @@ def main():
         eos_idx=opt.eos_idx,
         sos_idx=opt.bos_idx
     ).to(device)
+
+    printInfo("Parameter number: %s" % get_parameter_number(translator), "debugInfo")
 
     unk_idx = SRC.vocab.stoi[SRC.unk_token]
 
