@@ -1,0 +1,16 @@
+{% extends 'run_qa/base.html' %}
+{% load bootstrap3 %}
+{% load static %}
+
+{% block content %}
+    <div style="padding: 100px 100px 10px;">
+    	<form class="bs-example bs-example-form" role="form">
+    		<div class="input-group input-group-lg">
+    			<input type="text" class="form-control" placeholder="输入你想说的……">
+    			<span class="input-group-btn">
+                    <button class="btn btn-default" type="button">发送</button>
+                </span>
+    		</div><br>
+    	</form>
+    </div>
+{% endblock content %}

@@ -9,6 +9,7 @@ from utils import printInfo
 import random
 from utils import Constants
 import torchtext
+import jieba
 
 
 def read_data():
@@ -24,10 +25,18 @@ def read_data():
                 qa = line.split('\t')
                 Q.append(qa[0].strip())
                 A.append(qa[1].strip())
+    length = len(Q)
     printInfo("qa nums: %d" % len(Q))
     zipped_data = list(zip(Q, A))
     random.shuffle(zipped_data)
-    Q, A = zip(*zipped_data)
+    Q, A = map(lambda item: list(item), zip(*zipped_data))
+    for i in range(length):
+        Q[i] = ' '.join(list(jieba.cut(Q[i])))
+        A[i] = ' '.join(list(jieba.cut(A[i])))
+    print("Sample cut qa_pair:")
+    idx = random.randint(0, length - 1)
+    print("\tQ: %s" % Q[i])
+    print("\tA: %s" % A[i])
 
     def split_data_train(all_data):
         length = len(all_data)
@@ -52,8 +61,7 @@ def read_data():
         f.write('\n'.join(split_data_val(A)))
 
 
-def main():
-    read_data()
+def torchtext_process():
     max_len = 50
     SRC = torchtext.data.Field(
         pad_token=Constants.PAD_WORD,
@@ -97,6 +105,11 @@ def main():
     printInfo("Vocab size: %d" % len(SRC.vocab))
     pickle.dump(data, open('./data/new_data/data.pkl', 'wb'))
     printInfo("Torchtext data saved!")
+
+
+def main():
+    # read_data()
+    torchtext_process()
 
 
 if __name__ == "__main__":
